@@ -101,7 +101,7 @@ def google_dns_resolver(target):
     """
     url = f"https://dns.google/resolve?name={target}&type=A"
     
-    r = requests.get(url=url)
+    r = requests.get(url=url, timeout=60)
     if r.status_code != 200:
         return None
     else:
@@ -685,7 +685,7 @@ def public_dms_replication_instance_shodan_check(cache: dict, session, awsAccoun
         if ri["PubliclyAccessible"] is True:
             dmsPublicIp = ri["ReplicationInstancePublicIpAddress"]
             # check if IP indexed by Shodan
-            r = requests.get(url=f"{SHODAN_HOSTS_URL}{dmsPublicIp}?key={shodanApiKey}").json()
+            r = requests.get(url=f"{SHODAN_HOSTS_URL}{dmsPublicIp}?key={shodanApiKey}", timeout=60).json()
             if str(r) == "{'error': 'No information available for that IP.'}":
                 # this is a passing check
                 finding = {

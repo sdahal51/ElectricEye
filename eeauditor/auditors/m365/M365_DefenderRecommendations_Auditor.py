@@ -45,7 +45,7 @@ def get_oauth_token(cache, tenantId, clientId, clientSecret):
         "client_secret": clientSecret
     }
 
-    r = requests.post(tokenUrl, data=tokenData)
+    r = requests.post(tokenUrl, data=tokenData, timeout=60)
 
     if r.status_code != 200:
         raise r.reason
@@ -68,8 +68,8 @@ def get_security_center_recommendations(cache, tenantId, clientId, clientSecret)
 
     r = requests.get(
         f"{API_ROOT}/api/recommendations",
-        headers=headers
-    )
+        headers=headers, 
+    timeout=60)
 
     if r.status_code != 200:
         raise r.reason

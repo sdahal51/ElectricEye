@@ -233,8 +233,8 @@ class EEAuditor(object):
         # Retrieve the endpoints.json data to prevent multiple outbound calls
         endpointData = json.loads(
             get(
-                "https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/endpoints.json"
-            ).text
+                "https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/endpoints.json", 
+            timeout=60).text
         )
 
         for account in self.awsAccountTargets:

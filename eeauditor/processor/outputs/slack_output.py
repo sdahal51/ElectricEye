@@ -124,7 +124,7 @@ class SlackProvider(object):
                     'blocks': json.dumps(blocks)
                 }
                 # Send request and backoff if throttled
-                r = requests.post('https://slack.com/api/chat.postMessage', slackPayload)
+                r = requests.post('https://slack.com/api/chat.postMessage', slackPayload, timeout=60)
                 if r.status_code == 429:
                     retry = r.headers["retry-after"]
                     print(f"Slack Bot is being throttled, retrying in {retry} second(s).")
@@ -145,7 +145,7 @@ class SlackProvider(object):
                 'blocks': json.dumps(summaryBlock)
             }
             # Send request and backoff if throttled
-            r = requests.post('https://slack.com/api/chat.postMessage', slackPayload)
+            r = requests.post('https://slack.com/api/chat.postMessage', slackPayload, timeout=60)
 
             print(f"Finished sending Summary to Slack!")
         else:

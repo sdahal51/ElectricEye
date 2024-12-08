@@ -50,8 +50,8 @@ def retrieve_oauth_token(cache: dict, salesforceAppClientId: str, salesforceAppC
     # Retrieve the Token
     token = requests.post(
         "https://login.salesforce.com/services/oauth2/token",
-        data=data
-    ).json()
+        data=data, 
+    timeout=60).json()
 
     # Parse the Token and the URL of the Instance
     accessToken = token["access_token"]
@@ -80,7 +80,7 @@ def submit_salesforce_query(cache: dict, salesforceAppClientId: str, salesforceA
     # First call will use a Query to retrieve relevant user data
     url = f"{instanceUrl}/services/data/{SFDC_API_VERSION}/query/"
 
-    queryResult = requests.get(url, headers=headers, params={"q": query})
+    queryResult = requests.get(url, headers=headers, params={"q": query}, timeout=60)
     if queryResult.status_code != 200:
         print("Failed to submit Threat Detection related query! Exiting.")
         raise queryResult.reason
@@ -112,7 +112,7 @@ def get_salesforce_transaction_security_policies(cache: dict, salesforceAppClien
     SELECT ActionConfig, ApexPolicyId, BlockMessage, CustomEmailContent, Description, DeveloperName, EventName, EventType, ExecutionUserId, MasterLabel, NamespacePrefix, ResourceName, State, Type 
     FROM TransactionSecurityPolicy
     """
-    tspQuery = requests.get(url, headers=headers, params={"q": query})
+    tspQuery = requests.get(url, headers=headers, params={"q": query}, timeout=60)
     if tspQuery.status_code != 200:
         print("Failed to retrieve Transaction Security Policies from Salesforce! Exiting.")
         raise tspQuery.reason

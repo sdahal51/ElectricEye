@@ -50,8 +50,8 @@ def retrieve_oauth_token(cache: dict, salesforceAppClientId: str, salesforceAppC
     # Retrieve the Token
     token = requests.post(
         "https://login.salesforce.com/services/oauth2/token",
-        data=data
-    ).json()
+        data=data, 
+    timeout=60).json()
 
     # Parse the Token and the URL of the Instance
     accessToken = token["access_token"]
@@ -81,7 +81,7 @@ def get_salesforce_saml_sso_config(cache: dict, salesforceAppClientId: str, sale
     SELECT AttributeFormat, AttributeName, Audience, DeveloperName, ErrorUrl, ExecutionUserID, IdentityLocation, IdentityMapping, Issuer, Language, LoginUrl, LogoutUrl, MasterLabel, NamespacePrefix, OptionsSpInitBinding, OptionsUseConfigRequestMethod, OptionsUseSameDigestAlgoForSigning, OptionsRequireMfaSaml, OptionsUserProvisioning, RequestSignatureMethod, SamlJitHandlerId, SingleLogoutBinding, SingleLogoutUrl, ValidationCert, Version 
     FROM SamlSsoConfig
     """
-    samlSsoQuery = requests.get(url, headers=headers, params={"q": query})
+    samlSsoQuery = requests.get(url, headers=headers, params={"q": query}, timeout=60)
     if samlSsoQuery.status_code != 200:
         print("Failed to retrieve SAML SSO Configurations from Salesforce! Exiting.")
         raise samlSsoQuery.reason

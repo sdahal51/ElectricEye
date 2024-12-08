@@ -117,8 +117,8 @@ class FiremonCloudDefenseProvider(object):
             r = requests.post(
                 self.url, 
                 data=json.dumps(finding),
-                auth=(self.clientId, self.apiKey)
-            )
+                auth=(self.clientId, self.apiKey), 
+            timeout=60)
             if r.status_code == 429:
                 sleep(0.5)
             elif r.status_code == (400, 401, 403, 404):
