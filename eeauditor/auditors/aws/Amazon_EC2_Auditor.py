@@ -29,6 +29,7 @@ import datetime
 from dateutil.parser import parse
 import base64
 import json
+from security import safe_requests
 
 SHODAN_HOSTS_URL = "https://api.shodan.io/shodan/host/"
 
@@ -3075,7 +3076,7 @@ def public_ec2_shodan_check(cache: dict, session, awsAccountId: str, awsRegion: 
         except KeyError:
             continue
         # check if IP indexed by Shodan
-        r = requests.get(url=f"{SHODAN_HOSTS_URL}{ec2PublicIp}?key={shodanApiKey}").json()
+        r = safe_requests.get(url=f"{SHODAN_HOSTS_URL}{ec2PublicIp}?key={shodanApiKey}").json()
         if str(r) == "{'error': 'No information available for that IP.'}":
             # this is a passing check
             finding = {
@@ -3254,7 +3255,7 @@ def aws_elastic_ip_shodan_check(cache: dict, session, awsAccountId: str, awsRegi
         publicIp = eip["PublicIp"]
         eipArn = f"arn:{awsPartition}:ec2:{awsRegion}:{awsAccountId}:elastic-ip/{allocationId}"  
         # check if IP indexed by Shodan
-        r = requests.get(url=f"{SHODAN_HOSTS_URL}{publicIp}?key={shodanApiKey}").json()
+        r = safe_requests.get(url=f"{SHODAN_HOSTS_URL}{publicIp}?key={shodanApiKey}").json()
         if str(r) == "{'error': 'No information available for that IP.'}":
             # this is a passing check
             finding = {

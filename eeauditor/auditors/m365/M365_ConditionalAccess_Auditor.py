@@ -23,6 +23,7 @@ import datetime
 import base64
 import json
 from check_register import CheckRegister
+from security import safe_requests
 
 registry = CheckRegister()
 
@@ -66,7 +67,7 @@ def get_conditional_access_policies(cache, tenantId, clientId, clientSecret):
         "Authorization": f"Bearer {get_oauth_token(cache, tenantId, clientId, clientSecret)}"
     }
 
-    r = requests.get(
+    r = safe_requests.get(
         f"{API_ROOT}/identity/conditionalAccess/policies",
         headers=headers
     )

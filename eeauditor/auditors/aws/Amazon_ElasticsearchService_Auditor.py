@@ -22,13 +22,13 @@ import tomli
 import os
 import sys
 import boto3
-import requests
 import ipaddress
 import datetime
 import base64
 import json
 from botocore.exceptions import ClientError
 from check_register import CheckRegister
+from security import safe_requests
 
 registry = CheckRegister()
 
@@ -101,7 +101,7 @@ def google_dns_resolver(target):
     """
     url = f"https://dns.google/resolve?name={target}&type=A"
     
-    r = requests.get(url=url)
+    r = safe_requests.get(url=url)
     if r.status_code != 200:
         return None
     else:
@@ -1871,7 +1871,7 @@ def public_es_domain_shodan_check(cache: dict, session, awsAccountId: str, awsRe
             if esDomainIp is None:
                 continue
             # check if IP indexed by Shodan
-            r = requests.get(url=f"{SHODAN_HOSTS_URL}{esDomainIp}?key={shodanApiKey}").json()
+            r = safe_requests.get(url=f"{SHODAN_HOSTS_URL}{esDomainIp}?key={shodanApiKey}").json()
             if str(r) == "{'error': 'No information available for that IP.'}":
                 # this is a passing check
                 finding = {

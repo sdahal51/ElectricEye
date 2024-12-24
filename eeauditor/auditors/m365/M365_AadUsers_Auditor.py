@@ -23,6 +23,7 @@ import datetime
 import base64
 import json
 from check_register import CheckRegister
+from security import safe_requests
 
 registry = CheckRegister()
 
@@ -72,12 +73,12 @@ def get_aad_users_with_enrichment(cache, tenantId, clientId, clientSecret):
 
     # Implement pagination here in case a shitload of Users are returned
     try:
-        listusers = json.loads(requests.get(listUsersUrl,headers=headers).text)
+        listusers = json.loads(safe_requests.get(listUsersUrl,headers=headers).text)
         for user in listusers["value"]:
             userList.append(user)
 
         while listusers["@odata.nextLink"]:
-            listusers = json.loads(requests.get(listusers["@odata.nextLink"], headers=headers).text)
+            listusers = json.loads(safe_requests.get(listusers["@odata.nextLink"], headers=headers).text)
             if "@odata.nextLink" in listusers:
                 listUsersUrl = listusers["@odata.nextLink"]
             else:
@@ -140,7 +141,7 @@ def check_user_mfa_and_risk(token, users):
             user["identityProtectionRiskyUser"] = {}
 
         # Get the MFA Devices now
-        r = requests.get(
+        r = safe_requests.get(
             f"{API_ROOT}/users/{userId}/authentication/methods",
             headers=headers
         )
@@ -163,7 +164,7 @@ def get_identity_protection_risk_detections(token):
         "Authorization": f"Bearer {token}"
     }
 
-    r = requests.get(
+    r = safe_requests.get(
         f"{API_ROOT}/identityProtection/riskDetections",
         headers=headers
     )
@@ -183,7 +184,7 @@ def get_identity_protection_risky_users(token):
         "Authorization": f"Bearer {token}"
     }
 
-    r = requests.get(
+    r = safe_requests.get(
         f"{API_ROOT}/identityProtection/riskyUsers",
         headers=headers
     )
