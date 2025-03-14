@@ -45,7 +45,7 @@ def get_oauth_token(cache, tenantId, clientId, clientSecret):
         "client_secret": clientSecret
     }
 
-    r = requests.post(tokenUrl, data=tokenData)
+    r = requests.post(tokenUrl, data=tokenData, timeout=60)
 
     if r.status_code != 200:
         raise r.reason
@@ -72,12 +72,12 @@ def get_aad_users_with_enrichment(cache, tenantId, clientId, clientSecret):
 
     # Implement pagination here in case a shitload of Users are returned
     try:
-        listusers = json.loads(requests.get(listUsersUrl,headers=headers).text)
+        listusers = json.loads(requests.get(listUsersUrl,headers=headers, timeout=60).text)
         for user in listusers["value"]:
             userList.append(user)
 
         while listusers["@odata.nextLink"]:
-            listusers = json.loads(requests.get(listusers["@odata.nextLink"], headers=headers).text)
+            listusers = json.loads(requests.get(listusers["@odata.nextLink"], headers=headers, timeout=60).text)
             if "@odata.nextLink" in listusers:
                 listUsersUrl = listusers["@odata.nextLink"]
             else:
@@ -142,8 +142,8 @@ def check_user_mfa_and_risk(token, users):
         # Get the MFA Devices now
         r = requests.get(
             f"{API_ROOT}/users/{userId}/authentication/methods",
-            headers=headers
-        )
+            headers=headers, 
+        timeout=60)
 
         if r.status_code != 200:
             print(f"Unable to get MFA for User {id} because {r.reason}")
@@ -165,8 +165,8 @@ def get_identity_protection_risk_detections(token):
 
     r = requests.get(
         f"{API_ROOT}/identityProtection/riskDetections",
-        headers=headers
-    )
+        headers=headers, 
+    timeout=60)
 
     if r.status_code != 200:
         print(f"Unable to get riskDetections because {r.reason}")
@@ -185,8 +185,8 @@ def get_identity_protection_risky_users(token):
 
     r = requests.get(
         f"{API_ROOT}/identityProtection/riskyUsers",
-        headers=headers
-    )
+        headers=headers, 
+    timeout=60)
 
     if r.status_code != 200:
         print(f"Unable to get riskyUsers because {r.reason}")

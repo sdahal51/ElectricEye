@@ -142,7 +142,7 @@ def get_cisa_kev():
     Retrieves the U.S. CISA's Known Exploitable Vulnerabilities (KEV) Catalog and returns a list of CVE ID's
     """
 
-    rawKev = json.loads(requests.get("https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json").text)["vulnerabilities"]
+    rawKev = json.loads(requests.get("https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json", timeout=60).text)["vulnerabilities"]
 
     kevCves = [cve["cveID"] for cve in rawKev]
 

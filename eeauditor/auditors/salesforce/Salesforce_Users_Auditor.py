@@ -51,8 +51,8 @@ def retrieve_oauth_token(cache: dict, salesforceAppClientId: str, salesforceAppC
     # Retrieve the Token
     token = requests.post(
         "https://login.salesforce.com/services/oauth2/token",
-        data=data
-    ).json()
+        data=data, 
+    timeout=60).json()
 
     # Parse the Token and the URL of the Instance
     accessToken = token["access_token"]
@@ -79,7 +79,7 @@ def get_salesforce_users_with_mfa(cache: dict, salesforceAppClientId: str, sales
     # First call will use a Query to retrieve relevant user data
     url = f"{instanceUrl}/services/data/{SFDC_API_VERSION}/query/"
     query = "SELECT Username, Email, Id, FederationIdentifier, IsActive, LastLoginDate, NumberOfFailedLogins FROM User"
-    userQuery = requests.get(url, headers=headers, params={"q": query})
+    userQuery = requests.get(url, headers=headers, params={"q": query}, timeout=60)
     if userQuery.status_code != 200:
         print("Failed to retrieve users from Salesforce! Exiting.")
         raise userQuery.reason
@@ -94,7 +94,7 @@ def get_salesforce_users_with_mfa(cache: dict, salesforceAppClientId: str, sales
         mfaQuery = f"""
         SELECT Id, ExternalId, HasBuiltInAuthenticator, HasSalesforceAuthenticator, HasSecurityKey, HasTotp, HasUserVerifiedEmailAddress, HasUserVerifiedMobileNumber FROM TwoFactorMethodsInfo WHERE UserId = '{userId}'
         """
-        mfaQueryReq = requests.get(url, headers=headers, params={"q": mfaQuery})
+        mfaQueryReq = requests.get(url, headers=headers, params={"q": mfaQuery}, timeout=60)
         if mfaQueryReq.status_code == 200:
             userData["TwoFactorMethodsInfo"] = mfaQueryReq.json()["records"]
         else:

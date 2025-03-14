@@ -45,7 +45,7 @@ def get_oauth_token(cache, tenantId, clientId, clientSecret):
         "client_secret": clientSecret
     }
 
-    r = requests.post(tokenUrl, data=tokenData)
+    r = requests.post(tokenUrl, data=tokenData, timeout=60)
 
     if r.status_code != 200:
         raise r.reason
@@ -69,8 +69,8 @@ def get_mde_machines(cache, tenantId, clientId, clientSecret):
     
     r = requests.get(
         f"{API_ROOT}/api/machines",
-        headers=headers
-    )
+        headers=headers, 
+    timeout=60)
 
     defenderMachines = []
 
@@ -103,8 +103,8 @@ def get_alerts_by_machine(token, machineId):
 
     alerts = requests.get(
         f"{API_ROOT}/api/machines/{machineId}/alerts",
-        headers=headers
-    )
+        headers=headers, 
+    timeout=60)
 
     # Return empty lists when the Machine isn't found (404) or when there are not any alerts (empty ["value"])
     if alerts.status_code == 200:
@@ -129,8 +129,8 @@ def get_vulns_by_machine(token, machineId):
 
     vulns = requests.get(
         f"{API_ROOT}/api/machines/{machineId}/vulnerabilities",
-        headers=headers
-    )
+        headers=headers, 
+    timeout=60)
 
     # Get CVEs reported in CISA's KEV DB
     kevCves = get_cisa_kev()
@@ -155,8 +155,8 @@ def get_cisa_kev():
 
     rawKev = json.loads(
         requests.get(
-            "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
-        ).text
+            "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json", 
+        timeout=60).text
     )["vulnerabilities"]
 
     kevCves = [cve["cveID"] for cve in rawKev]
