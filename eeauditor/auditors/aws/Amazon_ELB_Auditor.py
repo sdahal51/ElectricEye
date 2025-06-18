@@ -103,7 +103,7 @@ def google_dns_resolver(target):
     """
     url = f"https://dns.google/resolve?name={target}&type=A"
     
-    r = requests.get(url=url)
+    r = requests.get(url=url, timeout=60)
     if r.status_code != 200:
         return None
     else:
@@ -1102,7 +1102,7 @@ def public_clb_shodan_check(cache: dict, session, awsAccountId: str, awsRegion: 
             if clbIp is None:
                 continue
             # check if IP indexed by Shodan
-            r = requests.get(url=f"{SHODAN_HOSTS_URL}{clbIp}?key={shodanApiKey}").json()
+            r = requests.get(url=f"{SHODAN_HOSTS_URL}{clbIp}?key={shodanApiKey}", timeout=60).json()
             if str(r) == "{'error': 'No information available for that IP.'}":
                 # this is a passing check
                 finding = {

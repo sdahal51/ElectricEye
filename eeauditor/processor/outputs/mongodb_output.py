@@ -104,7 +104,7 @@ class MongodbProvider(object):
         if mongodbDetails["mongodb_aws_documentdb_tls_enabled"] == True:
             self.useTls = True
             # Download the latest AWS Mongo TLS cert bundle
-            r = requests.get("https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem")
+            r = requests.get("https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem", timeout=60)
             print(f"Downloaded CA bundle")
             # Write it to where the output is happening
             with open("./global-bundle.pem", "wb") as f:
