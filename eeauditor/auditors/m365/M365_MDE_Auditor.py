@@ -23,6 +23,7 @@ import datetime
 import base64
 import json
 from check_register import CheckRegister
+from security import safe_requests
 
 registry = CheckRegister()
 
@@ -67,7 +68,7 @@ def get_mde_machines(cache, tenantId, clientId, clientSecret):
         "Authorization": f"Bearer {token}"
     }
     
-    r = requests.get(
+    r = safe_requests.get(
         f"{API_ROOT}/api/machines",
         headers=headers
     )
@@ -101,7 +102,7 @@ def get_alerts_by_machine(token, machineId):
     """
     headers = {"Authorization": f"Bearer {token}"}
 
-    alerts = requests.get(
+    alerts = safe_requests.get(
         f"{API_ROOT}/api/machines/{machineId}/alerts",
         headers=headers
     )
@@ -127,7 +128,7 @@ def get_vulns_by_machine(token, machineId):
     """
     headers = {"Authorization": f"Bearer {token}"}
 
-    vulns = requests.get(
+    vulns = safe_requests.get(
         f"{API_ROOT}/api/machines/{machineId}/vulnerabilities",
         headers=headers
     )

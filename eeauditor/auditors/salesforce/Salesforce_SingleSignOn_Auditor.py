@@ -24,6 +24,7 @@ import os
 import datetime
 import base64
 import json
+from security import safe_requests
 
 registry = CheckRegister()
 
@@ -81,7 +82,7 @@ def get_salesforce_saml_sso_config(cache: dict, salesforceAppClientId: str, sale
     SELECT AttributeFormat, AttributeName, Audience, DeveloperName, ErrorUrl, ExecutionUserID, IdentityLocation, IdentityMapping, Issuer, Language, LoginUrl, LogoutUrl, MasterLabel, NamespacePrefix, OptionsSpInitBinding, OptionsUseConfigRequestMethod, OptionsUseSameDigestAlgoForSigning, OptionsRequireMfaSaml, OptionsUserProvisioning, RequestSignatureMethod, SamlJitHandlerId, SingleLogoutBinding, SingleLogoutUrl, ValidationCert, Version 
     FROM SamlSsoConfig
     """
-    samlSsoQuery = requests.get(url, headers=headers, params={"q": query})
+    samlSsoQuery = safe_requests.get(url, headers=headers, params={"q": query})
     if samlSsoQuery.status_code != 200:
         print("Failed to retrieve SAML SSO Configurations from Salesforce! Exiting.")
         raise samlSsoQuery.reason

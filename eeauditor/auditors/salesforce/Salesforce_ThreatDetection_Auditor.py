@@ -24,6 +24,7 @@ import os
 import datetime
 import base64
 import json
+from security import safe_requests
 
 registry = CheckRegister()
 
@@ -80,7 +81,7 @@ def submit_salesforce_query(cache: dict, salesforceAppClientId: str, salesforceA
     # First call will use a Query to retrieve relevant user data
     url = f"{instanceUrl}/services/data/{SFDC_API_VERSION}/query/"
 
-    queryResult = requests.get(url, headers=headers, params={"q": query})
+    queryResult = safe_requests.get(url, headers=headers, params={"q": query})
     if queryResult.status_code != 200:
         print("Failed to submit Threat Detection related query! Exiting.")
         raise queryResult.reason
@@ -112,7 +113,7 @@ def get_salesforce_transaction_security_policies(cache: dict, salesforceAppClien
     SELECT ActionConfig, ApexPolicyId, BlockMessage, CustomEmailContent, Description, DeveloperName, EventName, EventType, ExecutionUserId, MasterLabel, NamespacePrefix, ResourceName, State, Type 
     FROM TransactionSecurityPolicy
     """
-    tspQuery = requests.get(url, headers=headers, params={"q": query})
+    tspQuery = safe_requests.get(url, headers=headers, params={"q": query})
     if tspQuery.status_code != 200:
         print("Failed to retrieve Transaction Security Policies from Salesforce! Exiting.")
         raise tspQuery.reason
